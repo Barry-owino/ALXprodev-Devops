@@ -19,7 +19,12 @@ for pokemon in "${POKEMONS[@]}"; do
 done
 
 # Wait for all background jobs to finish
-wait
+for pid in "${PIDS[@]}"; do
+    if ! wait "$pid"; then
+        echo "Process $pid failed — killing all remaining processes..."
+        kill "${PIDS[@]}" 2>/dev/null
+        exit 1
+    fi
+done
 
-echo "All Pokémon data fetched!"
-
+echo "All Pokémon data fetched successfully!"
